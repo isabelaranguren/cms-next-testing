@@ -22,7 +22,7 @@ app.prepare().then(() => {
       }
 
       // If the request is for the GraphQL endpoint, proxy it
-      const apiUrl = `${process.env.WORDPRESS_API_URL}`;
+      const apiUrl = 'http://cms.stagingseo.com/graphql';
       const response = await axios.post(apiUrl, req.body, {
         headers: {
           'Content-Type': 'application/json',

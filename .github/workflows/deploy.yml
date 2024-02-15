@@ -25,9 +25,11 @@ jobs:
 
       - name: Deploy via FTP
         run: |
+            node -r dotenv/config << EOF
             lftp -e "
             open -u ${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }} ${{ secrets.FTP_HOST }};
             set ssl:verify-certificate no;
             mirror -R -e -x .git/ -x .github/ -x node_modules/ . /public_html/;
             put server.js /public_html/;
             bye"
+        
