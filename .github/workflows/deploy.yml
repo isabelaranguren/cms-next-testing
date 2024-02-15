@@ -1,0 +1,33 @@
+name: Deploy to FTP
+
+on:
+  push:
+    branches:
+      - main  # Adjust the branch name as needed
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: 20
+
+      - name: Install dependencies and build Next.js app
+        run: |
+          yarn install  # Install project dependencies
+          yarn build  # Build Next.js app
+
+      - name: Deploy via FTP
+        run: |
+            lftp -e "
+            open -u ${{ secrets.FTP_USERNAME }},${{ secrets.FTP_PASSWORD }} ${{ secrets.FTP_HOST }};
+            set ssl:verify-certificate no;
+            mirror -R -e -x .git/ -x .github/ -x node_modules/ . /public_html/;
+            put server.js /public_html/;
+            bye"
